@@ -4,44 +4,62 @@ use strict;
 
 open(FH, "<Samples.txt");
 
-while (<FH>)
+my ($rootdir) = @ARGV;
 
-   {
+my $genome_bwa = "/shared/bioinformatics_core1/Shared/cox/cnv/GENOME/Homo_sapiens.GRCh38.dna.chromosome_index";
+my $genome_fa = "/shared/bioinformatics_core1/Shared/cox/cnv/GENOME/Homo_sapiens.GRCh38.dna.chromosome_index.fa.gz";
 
-   chomp;
-   my $sample = $_;
+my $picard = "/home/md1mpar/wc/picard-2.18.10/picard.jar";
 
-   open (OFH, ">pipeline_$sample.sh");
+while (<FH>){
 
-   print OFH "#!/bin/bash\n\n#\$ -pe openmp 6\n\n";
+    chomp;
+    my $sample = $_;
 
-   print OFH "/home/md1jrbx/Software/bwa-0.7.10/bwa mem -M -t 6 /fastdata/md1jrbx/HUMAN_GENOME/Homo_sapiens.GRCh38.dna.chromosome_index /fastdata/md1jrbx/SHOBHA/$sample/R1.fq /fastdata/md1jrbx/SHOBHA/$sample/R2.fq > /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sam\n";
+    open (OFH, ">pipeline_$sample.sh");
 
-   print OFH "/home/md1jrbx/Software/samtools-0.1.19/samtools view -Sb /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sam > /fastdata/md1jrbx/SHOBHA/BAMS/$sample.bam\n";
+    print OFH "#!/bin/bash\n\n";
 
-   print OFH "/home/md1jrbx/Software/samtools-0.1.19/samtools sort /fastdata/md1jrbx/SHOBHA/BAMS/$sample.bam /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.bam\n";
+    print OFH "#\$ -S /bin/bash\n";
+    print OFH "#\$ -l rmem=40G\n";
+    print OFH "#\$ -m bea\n";
+    print OFH "#\$ -M matthew.parker\@sheffield.ac.uk\n";
+    print OFH "#\$ -l h_rt=12:00:00\n";
+    print OFH "#\$ -o $sample_bam_generate.out\n";
+    print OFH "#\$ -e $sample_bam_generate.err\n";
+    print OFH "#\$ -N $sample\n";
 
-   print OFH "java -Xmx2g -jar /home/md1jrbx/Software/picard-tools-1.114/MarkDuplicates.jar I=/fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.bam.bam O=/fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.dups.bam M=/fastdata/md1jrbx/SHOBHA/METRICS/$sample.dups.metrics\n";
+    print OFH "#\$ -pe openmp 6\n\n";
 
-   print OFH "/home/md1jrbx/Software/samtools-0.1.19/samtools rmdup /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.dups.bam /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.nodups.bam\n";
+    print OFH "module load apps/bwa/0.7.17/gcc-6.2\n";
 
-   print OFH "/home/md1jrbx/Software/samtools-0.1.19/samtools view -b -q 37 /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.nodups.bam > /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.final.bam\n";
+    print OFH "module load apps/SAMtools/1.7/gcc-4.9.4\n";
 
-   print OFH "/home/md1jrbx/Software/samtools-0.1.19/samtools view -F 0x40 /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.final.bam | cut -f1 | sort | uniq | wc -l > /fastdata/md1jrbx/SHOBHA/METRICS/$sample.adjusted_counts\n";
+    print OFH "module load apps/java/jdk1.8.0_102/binary\n\n";
 
-   print OFH "module load apps/R\n";
+    print OFH "bwa mem -M -t 6 $genome_bwa $rootdir/$sample/*R1*.fq $rootdir/$sample/*R2*.fq | samtools sort - | samtools view -bh - > $rootdir/BAMS/$sample.sorted.bam\n";
 
-   print OFH "java -Xmx2g -jar /home/md1jrbx/Software/picard-tools-1.114/CollectInsertSizeMetrics.jar I=/fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.final.bam O=/fastdata/md1jrbx/SHOBHA/METRICS/$sample.inserts H=/fastdata/md1jrbx/SHOBHA/METRICS/$sample.hist\n";
+    print OFH "java -Xmx2g -jar $picard MarkDuplicates I=$rootdir/BAMS/$sample.sorted.bam O=$rootdir/BAMS/$sample.sorted.dups.bam M=$rootdir/METRICS/$sample.dups.metrics\n";
 
-   print OFH "/home/md1jrbx/Software/samtools-0.1.19/samtools flagstat /fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.final.bam > /fastdata/md1jrbx/SHOBHA/METRICS/$sample.counts\n";
+    print OFH "samtools rmdup $rootdir/BAMS/$sample.sorted.dups.bam $rootdir/BAMS/$sample.sorted.nodups.bam\n";
 
-   print OFH "java -Xmx2g -jar /home/md1jrbx/Software/picard-tools-1.114/CollectWgsMetrics.jar I=/fastdata/md1jrbx/SHOBHA/BAMS/$sample.sorted.final.bam O=/fastdata/md1jrbx/SHOBHA/METRICS/$sample.cov R=/fastdata/md1jrbx/HUMAN_GENOME/Homo_sapiens.GRCh38.dna.chromosome_index.fa\n";
+    print OFH "samtools view -b -q 37 $rootdir/BAMS/$sample.sorted.nodups.bam > $rootdir/BAMS/$sample.sorted.final.bam\n";
 
-   print OFH "wc -l /fastdata/md1jrbx/SHOBHA/$sample/R1.fq > /fastdata/md1jrbx/SHOBHA/METRICS/$sample.all_counts\n";
- 
-   close OFH;
+    print OFH "samtools view -F 0x40 $rootdir/BAMS/$sample.sorted.final.bam | cut -f1 | sort | uniq | wc -l > $rootdir/METRICS/$sample.adjusted_counts\n";
 
-   system "qsub pipeline_$sample.sh";
+    print OFH "module load apps/R\n";
+
+    print OFH "java -Xmx2g -jar $picard CollectInsertSizeMetrics I=$rootdir/BAMS/$sample.sorted.final.bam O=$rootdir/METRICS/$sample.inserts H=/$rootdir/METRICS/$sample.hist\n";
+
+    print OFH "samtools flagstat $rootdir/BAMS/$sample.sorted.final.bam > $rootdir/METRICS/$sample.counts\n";
+
+    print OFH "java -Xmx2g -jar $picard CollectWgsMetrics I=$rootdir/BAMS/$sample.sorted.final.bam O=$rootdir/METRICS/$sample.cov R=$genome_fa\n";
+
+    print OFH "wc -l $rootdir/$sample/*R1*.fq > $rootdir/METRICS/$sample.all_counts\n";
+
+    close OFH;
+
+    #system "qsub -q bioinf-core.q -P bioinf-core pipeline_$sample.sh";
 
    }
 
