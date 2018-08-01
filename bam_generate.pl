@@ -58,7 +58,7 @@ while (<FH>){
 
     close OFH;
 
-    #system "qsub -q bioinf-core.q -P bioinf-core pipeline_$sample.sh";
+    system "qsub -q bioinf-core.q -P bioinf-core pipeline_$sample.sh";
 
    }
 
