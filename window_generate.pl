@@ -30,12 +30,11 @@ while (<FH>){
 
     print OFH "module load apps/SAMtools/1.7/gcc-4.9.4\n";
 
-    print OFH "samtools = `which samtools`";
+    print OFH "samtools=`which samtools`\n";
 
+    print OFH "perl $scriptdir/bam2windows.pl --samtools-path \${samtools} -ts -cs -d $rootdir/TMP -r 1000 -gc $gcbases $rootdir/BAMS/$sample.sorted.final.bam $poolbam > $rootdir/WINDOWS/$sample.tab\n";
 
-    print OFH "perl $scriptdir/bam2windows.pl --samtools-path \${samtools} -ts -cs -d $rootdir/TMP -r 1000 -gc $gcbases $rootdir/BAMS/$sample.sorted.final.bam $poolbam > $rootdir/BAMS/WINDOWS/$sample.tab\n";
-
-    print OFH "perl $scriptdir/clean_tab.pl $sample\n";
+    print OFH "perl $scriptdir/clean_tab.pl $rootdir/WINDOWS/$sample.tab $rootdir/WINDOWS/$sample.bed\n";
 
     close OFH;
 

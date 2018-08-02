@@ -1,13 +1,19 @@
 #/usr/bin/perl
 
 use strict;
+use File::Basename;
 
 my $file = $ARGV[0];
+my $outfile = $ARGV[1];
+my $clean_outfile == basename(outfile,".bed");
 my $coord1 = 0;
 my $coord2 = 0;
 my $line_num = 0;
 
-open(FH, "</fastdata/md1jrbx/SHOBHA/WINDOWS/$file.tab");
+my $bedtools = "/home/md1mpar/wc/bedtools2-2.20.1/bin/bedtools"; #bedtools2-2.20.1
+my $excluded_regions = ; #/home/md1jrbx/Shobha/Excluded_Regions.bed
+
+open(FH, "<$file");
 
 LOOP: while (<FH>)
 
@@ -31,8 +37,8 @@ my $diff = $coord2 - $coord1;
 
 my $line_num = 0;
 
-open(FH, "</fastdata/md1jrbx/SHOBHA/WINDOWS/$file.tab");
-open(OFH, ">/fastdata/md1jrbx/SHOBHA/WINDOWS/$file.bed");
+open(FH, "<$file");
+open(OFH, ">$outfile");
 
 while (<FH>)
 
@@ -52,12 +58,12 @@ while (<FH>)
 close OFH;
 close FH;
 
-system ("/home/md1jrbx/Software/bedtools2-2.20.1/bin/bedtools intersect -a /fastdata/md1jrbx/SHOBHA/WINDOWS/$file.bed -b /home/md1jrbx/Shobha/Excluded_Regions.bed -v > /fastdata/md1jrbx/SHOBHA/WINDOWS/$file.clean.bed");
+system ("$bedtools intersect -a $outfile -b $excluded_regions -v > $clean_outfile.clean.bed");
 
 my $line_num = 0;
 
-open(FH, "</fastdata/md1jrbx/SHOBHA/WINDOWS/$file.clean.bed");
-open(OFH, ">/fastdata/md1jrbx/SHOBHA/WINDOWS/$file.clean.tab");
+open(FH, "<$clean_outfile.clean.bed");
+open(OFH, ">$clean_outfile.clean.tab");
 
 while (<FH>)
 
