@@ -33,7 +33,7 @@ while (<FH>){
     print OFH "samtools = `which samtools`";
 
 
-    print OFH "perl $scriptdir/bam2windows.pl --samtools-path $samtools -ts -cs -d $rootdir/TMP -r 1000 -gc $gcbases $rootdir/BAMS/$sample.sorted.final.bam $poolbam > $rootdir/BAMS/WINDOWS/$name.tab\n";
+    print OFH "perl $scriptdir/bam2windows.pl --samtools-path \${samtools} -ts -cs -d $rootdir/TMP -r 1000 -gc $gcbases $rootdir/BAMS/$sample.sorted.final.bam $poolbam > $rootdir/BAMS/WINDOWS/$sample.tab\n";
 
     print OFH "perl $scriptdir/clean_tab.pl $name\n";
 
