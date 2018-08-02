@@ -2,27 +2,44 @@
 
 use strict;
 
-open(FH, "<Sample_Pairs.txt");
+my ($rootdir,$scriptdir) = @ARGV;
 
-while (<FH>)
+my $gcbases = "/home/md1mpar/wc/cox_ctdna_cnv/gc1000base_38.txt";
+my $poolbam = "/shared/bioinformatics_core1/Shared/cox/cnv/POOLED_NORMAL/Pool.sorted.final.bam";
 
-   {
+open(FH, "<Samples.txt");
 
-   chomp;
-   (my $sample1, my $sample2, my $name) = split(/\t/, $_, 3);
+while (<FH>){
 
-   open (OFH, ">window_$name.sh");
+    chomp;
+    my $sample = $_;
 
-   print OFH "#!/bin/bash\n\n";
+    open (OFH, ">window_$name.sh");
 
-   print OFH "perl /home/md1jrbx/Shobha/bam2windows.pl --samtools-path /home/md1jrbx/Software/samtools-0.1.19/samtools -ts -cs -d /fastdata/md1jrbx/TMP -r 1000 -gc /home/md1jrbx/Shobha/gc1000base_38.txt /fastdata/md1jrbx/SHOBHA/BAMS/$sample1.sorted.final.bam /fastdata/md1jrbx/SHOBHA/BAMS/$sample2.sorted.final.bam > /fastdata/md1jrbx/SHOBHA/WINDOWS/$name.tab\n";
+    print OFH "#!/bin/bash\n\n";
 
-   print OFH "perl /home/md1jrbx/Shobha/clean_tab.pl $name\n";
+    print OFH "#\$ -S /bin/bash\n";
+    print OFH "#\$ -l rmem=20G\n";
+    print OFH "#\$ -m bea\n";
+    print OFH "#\$ -M matthew.parker\@sheffield.ac.uk\n";
+    print OFH "#\$ -l h_rt=4:00:00\n";
+    print OFH "#\$ -o $sample\_window_generate.out\n";
+    print OFH "#\$ -e $sample\_window_generate.err\n";
+    print OFH "#\$ -N $sample\n";
+    print OFH "#\$ -pe openmp 1\n\n";
 
-   close OFH;
+    print OFH "module load apps/SAMtools/1.7/gcc-4.9.4\n";
 
-   system "qsub window_$name.sh";
+    print OFH "samtools = `which samtools`";
 
-   }
+
+    print OFH "perl $scriptdir/bam2windows.pl --samtools-path $samtools -ts -cs -d $rootdir/TMP -r 1000 -gc $gcbases $rootdir/BAMS/$sample1.sorted.final.bam $poolbam > $rootdir/BAMS/WINDOWS/$name.tab\n";
+
+    print OFH "perl $scriptdir/clean_tab.pl $name\n";
+
+    close OFH;
+
+#    system "qsub -q bioinf-core.q -P bioinf-core window_$name.sh";
+}
 
 close FH;
