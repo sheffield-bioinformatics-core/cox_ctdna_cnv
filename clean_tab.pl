@@ -5,7 +5,7 @@ use File::Basename;
 
 my $file = $ARGV[0];
 my $outfile = $ARGV[1];
-my $clean_outfile == basename(outfile,".bed");
+my $clean_outfile == basename($outfile,".bed");
 my $coord1 = 0;
 my $coord2 = 0;
 my $line_num = 0;
