@@ -11,7 +11,7 @@ my $coord2 = 0;
 my $line_num = 0;
 
 my $bedtools = "/home/md1mpar/wc/bedtools2-2.20.1/bin/bedtools"; #bedtools2-2.20.1
-my $excluded_regions = ; #/home/md1jrbx/Shobha/Excluded_Regions.bed
+my $excluded_regions = "/home/md1mpar/wc/cox_ctdna_cnv/Excluded_Regions.bed"; #/home/md1jrbx/Shobha/Excluded_Regions.bed
 
 open(FH, "<$file");
 
