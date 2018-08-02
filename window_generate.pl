@@ -14,7 +14,7 @@ while (<FH>){
     chomp;
     my $sample = $_;
 
-    open (OFH, ">window_$name.sh");
+    open (OFH, ">window_$sample.sh");
 
     print OFH "#!/bin/bash\n\n";
 
@@ -33,7 +33,7 @@ while (<FH>){
     print OFH "samtools = `which samtools`";
 
 
-    print OFH "perl $scriptdir/bam2windows.pl --samtools-path $samtools -ts -cs -d $rootdir/TMP -r 1000 -gc $gcbases $rootdir/BAMS/$sample1.sorted.final.bam $poolbam > $rootdir/BAMS/WINDOWS/$name.tab\n";
+    print OFH "perl $scriptdir/bam2windows.pl --samtools-path $samtools -ts -cs -d $rootdir/TMP -r 1000 -gc $gcbases $rootdir/BAMS/$sample.sorted.final.bam $poolbam > $rootdir/BAMS/WINDOWS/$name.tab\n";
 
     print OFH "perl $scriptdir/clean_tab.pl $name\n";
 
