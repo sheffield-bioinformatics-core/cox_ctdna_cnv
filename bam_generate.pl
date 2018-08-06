@@ -21,14 +21,14 @@ while (<FH>){
     print OFH "#!/bin/bash\n\n";
 
     print OFH "#\$ -S /bin/bash\n";
-    print OFH "#\$ -l rmem=40G\n";
+    print OFH "#\$ -l rmem=20G\n";
     print OFH "#\$ -m bea\n";
     print OFH "#\$ -M matthew.parker\@sheffield.ac.uk\n";
     print OFH "#\$ -l h_rt=4:00:00\n";
     print OFH "#\$ -o $sample\_bam_generate.out\n";
     print OFH "#\$ -e $sample\_bam_generate.err\n";
     print OFH "#\$ -N $sample\n";
-    print OFH "#\$ -pe openmp 6\n\n";
+    print OFH "#\$ -pe openmp 4\n\n";
 
     print OFH "module load apps/bwa/0.7.17/gcc-6.2\n";
 
@@ -36,7 +36,7 @@ while (<FH>){
 
     print OFH "module load apps/java/jdk1.8.0_102/binary\n\n";
 
-    print OFH "bwa mem -M -t 6 $genome_bwa $rootdir/$sample/*R1*.fastq.gz $rootdir/$sample/*R2*.fastq.gz | samtools sort - | samtools view -bh - > $rootdir/BAMS/$sample.sorted.bam\n";
+    print OFH "bwa mem -M -t 4 $genome_bwa $rootdir/$sample/*R1*.fastq.gz $rootdir/$sample/*R2*.fastq.gz | samtools sort - | samtools view -bh - > $rootdir/BAMS/$sample.sorted.bam\n";
 
     print OFH "java -Xmx2g -jar $picard MarkDuplicates I=$rootdir/BAMS/$sample.sorted.bam O=$rootdir/BAMS/$sample.sorted.dups.bam M=$rootdir/METRICS/$sample.dups.metrics\n";
 

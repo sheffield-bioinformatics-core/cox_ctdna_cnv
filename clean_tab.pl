@@ -5,7 +5,10 @@ use File::Basename;
 
 my $file = $ARGV[0];
 my $outfile = $ARGV[1];
-my $clean_outfile == basename($outfile,".bed");
+my $dir = dirname($outfile);
+my $clean_outfile_tmp = basename($outfile,".bed");
+my $clean_outfile = "$dir/$clean_outfile_tmp";
+print "$clean_outfile";
 my $coord1 = 0;
 my $coord2 = 0;
 my $line_num = 0;
@@ -61,6 +64,8 @@ close FH;
 system ("$bedtools intersect -a $outfile -b $excluded_regions -v > $clean_outfile.clean.bed");
 
 my $line_num = 0;
+
+print "$clean_outfile";
 
 open(FH, "<$clean_outfile.clean.bed");
 open(OFH, ">$clean_outfile.clean.tab");
