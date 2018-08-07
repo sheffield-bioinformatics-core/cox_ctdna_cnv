@@ -32,9 +32,10 @@ unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_1000_DENSITY" or mkdir "$rootdir/CNA
 unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST" or mkdir "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST") {
     die "Unable to create $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST\n";
 
-}unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY" or mkdir "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY") {
+}
+unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY" or mkdir "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY") {
     die "Unable to create $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY\n";
-
+}
 
 while (<FH>)
 
