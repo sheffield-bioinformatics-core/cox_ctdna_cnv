@@ -2,9 +2,6 @@
 
 use strict;
 
-open(FH, "<Samples.txt");
-
-
 my $rootdir = $ARGV[0];
 my $scriptdir = $ARGV[1];
 
@@ -37,6 +34,8 @@ unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY" or mkdir "$rootdir/CN
     die "Unable to create $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY\n";
 }
 
+open(FH, "<Samples.txt");
+
 while (<FH>)
 
    {
@@ -44,6 +43,7 @@ while (<FH>)
    chomp;
 
    my $sample = $_;
+   print "$sample";
 
    system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_closest.R $rootdir/WINDOWS/$sample.tab $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample\_peaks.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample\_DNAcopy.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample\_smooth.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample\_win.tab");
 
