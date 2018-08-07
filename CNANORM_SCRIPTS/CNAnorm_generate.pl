@@ -2,7 +2,7 @@
 
 use strict;
 
-open(FH, "<../Samples.txt");
+open(FH, "<Samples.txt");
 
 
 my $rootdir = $ARGV[0];
