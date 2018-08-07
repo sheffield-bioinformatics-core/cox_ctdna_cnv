@@ -2,6 +2,8 @@
 
 use strict;
 
+my ($rootdir) = @ARGV;
+
 my %metrics = ();
 
 open(FH, "<Samples.txt");
@@ -13,7 +15,7 @@ while (<FH>)
    chomp;
    my $sample = $_;
 
-   open(CFH, "</fastdata/md1jrbx/SHOBHA/METRICS/$sample.adjusted_counts");
+   open(CFH, "<$rootdir/METRICS/$sample.adjusted_counts");
 
    LOOP: while (<CFH>)
 
@@ -45,7 +47,7 @@ while (<FH>)
    chomp;
    my $sample = $_;
 
-   open(CFH, "</fastdata/md1jrbx/SHOBHA/METRICS/$sample.cov");
+   open(CFH, "<$rootdir/METRICS/$sample.cov");
 
    LOOP: while (<CFH>)
 
@@ -87,7 +89,7 @@ while (<FH>)
    chomp;
    my $sample = $_;
 
-   open(CFH, "</fastdata/md1jrbx/SHOBHA/METRICS/$sample.dups.metrics");
+   open(CFH, "<$rootdir/METRICS/$sample.dups.metrics");
 
    LOOP: while (<CFH>)
 
@@ -129,7 +131,7 @@ while (<FH>)
    chomp;
    my $sample = $_;
 
-   open(CFH, "</fastdata/md1jrbx/SHOBHA/METRICS/$sample.inserts");
+   open(CFH, "<$rootdir/METRICS/$sample.inserts");
 
    LOOP: while (<CFH>)
 
@@ -170,7 +172,7 @@ while (<FH>)
    chomp;
    my $sample = $_;
 
-   open(CFH, "</fastdata/md1jrbx/SHOBHA/METRICS/$sample.all_counts");
+   open(CFH, "<$rootdir/METRICS/$sample.all_counts");
 
    while (<CFH>)
 
