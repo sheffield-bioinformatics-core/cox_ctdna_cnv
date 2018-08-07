@@ -2,30 +2,63 @@
 
 use strict;
 
-open(FH, "<../Sample_Pairs.txt");
+open(FH, "<../Samples.txt");
+
+
+my $rootdir = $ARGV[0];
+my $scriptdir = $ARGV[1];
+
+unless(-e "$rootdir/CNANORM" or mkdir "$rootdir/CNANORM") {
+    die "Unable to create $rootdir/CNANORM\n";
+}
+unless(-e "$rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST" or mkdir "$rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST") {
+    die "Unable to create $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST\n";
+}
+unless(-e "$rootdir/CNANORM/ALL_WINDOWS_1000_DENSITY" or mkdir "$rootdir/CNANORM/ALL_WINDOWS_1000_DENSITY") {
+    die "Unable to create $rootdir/CNANORM/ALL_WINDOWS_1000_DENSITY\n";
+}
+unless(-e "$rootdir/CNANORM/ALL_WINDOWS_FIXED_CLOSEST" or mkdir "$rootdir/CNANORM/ALL_WINDOWS_FIXED_CLOSEST") {
+    die "Unable to create $rootdir/CNANORM/ALL_WINDOWS_FIXED_CLOSEST\n";
+}
+unless(-e "$rootdir/CNANORM/ALL_WINDOWS_FIXED_DENSITY" or mkdir "$rootdir/CNANORM/ALL_WINDOWS_FIXED_DENSITY") {
+    die "Unable to create $rootdir/CNANORM/ALL_WINDOWS_FIXED_DENSITY\n";
+}
+unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_1000_CLOSEST" or mkdir "$rootdir/CNANORM/CLEANED_WINDOWS_1000_CLOSEST") {
+    die "Unable to create $rootdir/CNANORM/CLEANED_WINDOWS_1000_CLOSEST\n";
+}
+unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_1000_DENSITY" or mkdir "$rootdir/CNANORM/CLEANED_WINDOWS_1000_DENSITY") {
+    die "Unable to create $rootdir/CNANORM/CLEANED_WINDOWS_1000_DENSITY\n";
+}
+unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST" or mkdir "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST") {
+    die "Unable to create $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST\n";
+
+}unless(-e "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY" or mkdir "$rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY") {
+    die "Unable to create $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY\n";
+
 
 while (<FH>)
 
    {
 
    chomp;
-   my @columns = split(/\t/, $_);
 
-   system ("RScript CNANorm_closest.R /Users/james/Documents/PROJECTS/Shobha/Pool/WINDOWS/$columns[2].tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_1000_CLOSEST/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_1000_CLOSEST/$columns[2]_DNAcopy.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_1000_CLOSEST/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_1000_CLOSEST/$columns[2]_win.tab"); 
+   my $sample = $_;
 
-   system ("RScript CNANorm_closest.R /Users/james/Documents/PROJECTS/Shobha/Pool/WINDOWS/$columns[2].clean.tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$columns[2]_DNAcopy.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$columns[2]_win.tab");
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_closest.R $rootdir/WINDOWS/$sample.tab $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample_peaks.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample_DNAcopy.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample_smooth.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_CLOSEST/$sample_win.tab");
 
-   system ("RScript CNANorm_closest.R /Users/james/Documents/PROJECTS/Shobha/Pool/FIXED_WINDOWS/$columns[2].tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$columns[2]_DNAcopy.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$columns[2]_win.tab");                            
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_closest.R $rootdir/WINDOWS/$sample.clean.tab $rootdir/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$sample_peaks.pdf $rootdir/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$sample_DNAcopy.pdf $rootdir/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$sample_smooth.pdf $rootdir/CNANORM/CLEANED_WINDOWS_1000_CLOSEST/$sample_win.tab");
 
-   system ("RScript CNANorm_closest.R /Users/james/Documents/PROJECTS/Shobha/Pool/FIXED_WINDOWS/$columns[2].clean.tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$columns[2]_DNAcopy.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$columns[2]_win.tab");
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_closest.R $rootdir/FIXED_WINDOWS/$sample.tab $rootdir/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$sample_peaks.pdf $rootdir/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$sample_DNAcopy.pdf $rootdir/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$sample_smooth.pdf $rootdir/CNANORM/ALL_WINDOWS_FIXED_CLOSEST/$sample_win.tab");                            
 
-   system ("RScript CNANorm_density.R /Users/james/Documents/PROJECTS/Shobha/Pool/WINDOWS/$columns[2].tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_1000_DENSITY/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_1000_DENSITY/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_1000_DENSITY/$columns[2]_win.tab");
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_closest.R $rootdir/FIXED_WINDOWS/$sample.clean.tab $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$sample_peaks.pdf $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$sample_DNAcopy.pdf $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$sample_smooth.pdf $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_CLOSEST/$sample_win.tab");
 
-   system ("RScript CNANorm_density.R /Users/james/Documents/PROJECTS/Shobha/Pool/WINDOWS/$columns[2].clean.tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_1000_DENSITY/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_1000_DENSITY/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_1000_DENSITY/$columns[2]_win.tab");
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_density.R $rootdir/WINDOWS/$sample.tab $rootdir/CNANORM/ALL_WINDOWS_1000_DENSITY/$sample_peaks.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_DENSITY/$sample_smooth.pdf $rootdir/CNANORM/ALL_WINDOWS_1000_DENSITY/$sample_win.tab");
 
-   system ("RScript CNANorm_density.R /Users/james/Documents/PROJECTS/Shobha/Pool/FIXED_WINDOWS/$columns[2].tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_FIXED_DENSITY/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_FIXED_DENSITY/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/ALL_WINDOWS_FIXED_DENSITY/$columns[2]_win.tab");
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_density.R $rootdir/WINDOWS/$sample.clean.tab $rootdir/CNANORM/CLEANED_WINDOWS_1000_DENSITY/$sample_peaks.pdf $rootdir/CNANORM/CLEANED_WINDOWS_1000_DENSITY/$sample_smooth.pdf $rootdir/CNANORM/CLEANED_WINDOWS_1000_DENSITY/$sample_win.tab");
 
-   system ("RScript CNANorm_density.R /Users/james/Documents/PROJECTS/Shobha/Pool/FIXED_WINDOWS/$columns[2].clean.tab /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY/$columns[2]_peaks.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY/$columns[2]_smooth.pdf /Users/james/Documents/PROJECTS/Shobha/Pool/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY/$columns[2]_win.tab");
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_density.R $rootdir/FIXED_WINDOWS/$sample.tab $rootdir/CNANORM/ALL_WINDOWS_FIXED_DENSITY/$sample_peaks.pdf $rootdir/CNANORM/ALL_WINDOWS_FIXED_DENSITY/$sample_smooth.pdf $rootdir/CNANORM/ALL_WINDOWS_FIXED_DENSITY/$sample_win.tab");
+
+   system ("RScript $scriptdir/CNANORM_SCRIPTS/CNANorm_density.R $rootdir/FIXED_WINDOWS/$sample.clean.tab $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY/$sample_peaks.pdf $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY/$sample_smooth.pdf $rootdir/CNANORM/CLEANED_WINDOWS_FIXED_DENSITY/$sample_win.tab");
 
    }
 
